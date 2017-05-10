@@ -4,6 +4,10 @@ var _regenerator = require('babel-runtime/regenerator');
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -34,18 +38,21 @@ twilioQueue.process(function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.next = 2;
+
+            console.log('PROCESSING: %s', (0, _stringify2.default)(job.data));
+
+            _context.next = 3;
             return twilio.messages.create({
               from: process.env.TWILIO_PHONE,
               to: job.data.From,
               body: 'You texted: \'' + job.data.Body + '\''
             });
 
-          case 2:
+          case 3:
 
             done();
 
-          case 3:
+          case 4:
           case 'end':
             return _context.stop();
         }
