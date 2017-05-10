@@ -7,8 +7,6 @@ dotenv.load()
 
 const [,host,port,db] = process.env.REDIS_URL.match(/redis\:\/\/([\d\.]*)\:(\d*)\/(\d*)/)
 
-const toureiro = Toureiro({ redis: { port, host, db } })
-
 const twilioQueue = new Queue('twilio', port, host, { db });
 
 const server = express()
