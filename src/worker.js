@@ -10,6 +10,8 @@ const twilioQueue = new Queue('twilio', process.env.REDIS_URL);
 
 twilioQueue.process(async (job, done) => {
 
+  console.log('PROCESSING: %s', JSON.stringify(job.data))
+
   await twilio.messages.create({
     from: process.env.TWILIO_PHONE,
     to: job.data.From,

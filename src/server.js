@@ -14,6 +14,8 @@ server.use(bodyParser.json())
 
 server.post('/confirm', async (req, res) => {
 
+  console.log('QUEUEING: %s', JSON.stringify(req.body))
+
   await TwilioQueue.add(req.body)
 
   res.status(200).send('OK')
