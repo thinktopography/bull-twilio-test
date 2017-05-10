@@ -12,6 +12,10 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
+var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
 var _dotenv = require('dotenv');
 
 var _dotenv2 = _interopRequireDefault(_dotenv);
@@ -28,11 +32,23 @@ var _bull = require('bull');
 
 var _bull2 = _interopRequireDefault(_bull);
 
+var _toureiro = require('toureiro');
+
+var _toureiro2 = _interopRequireDefault(_toureiro);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _dotenv2.default.load();
 
-var TwilioQueue = new _bull2.default('twilio', process.env.REDIS_URL);
+var _process$env$REDIS_UR = process.env.REDIS_URL.match(/redis\:\/\/([\d\.]*)\:(\d*)\/(\d*)/),
+    _process$env$REDIS_UR2 = (0, _slicedToArray3.default)(_process$env$REDIS_UR, 4),
+    host = _process$env$REDIS_UR2[1],
+    port = _process$env$REDIS_UR2[2],
+    db = _process$env$REDIS_UR2[3];
+
+var toureiro = (0, _toureiro2.default)({ redis: { port: port, host: host, db: db } });
+
+var twilioQueue = new _bull2.default('twilio', port, host, { db: db });
 
 var server = (0, _express2.default)();
 
@@ -50,13 +66,13 @@ server.post('/confirm', function () {
             console.log('QUEUEING: %s', (0, _stringify2.default)(req.body));
 
             _context.next = 3;
-            return TwilioQueue.add(req.body);
+            return twilioQueue.add(req.body, { attempts: 3, backoff: 5000 });
 
           case 3:
             result = _context.sent;
 
 
-            res.status(200).send('OK');
+            res.status(200).type('application/xml').send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
 
           case 5:
           case 'end':
