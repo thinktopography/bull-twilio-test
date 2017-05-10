@@ -41,17 +41,14 @@ server.post('/confirm', function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-
-            console.log(req.body);
-
-            _context.next = 3;
+            _context.next = 2;
             return TwilioQueue.add(req.body);
 
-          case 3:
+          case 2:
 
             res.status(200).send('OK');
 
-          case 4:
+          case 3:
           case 'end':
             return _context.stop();
         }
