@@ -16,7 +16,9 @@ server.post('/confirm', async (req, res) => {
 
   console.log('QUEUEING: %s', JSON.stringify(req.body))
 
-  await TwilioQueue.add(req.body)
+  const result = await TwilioQueue.add(req.body)
+
+  console.log(result)
 
   res.status(200).send('OK')
 
