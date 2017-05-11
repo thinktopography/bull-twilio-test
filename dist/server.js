@@ -32,6 +32,10 @@ var _bull = require('bull');
 
 var _bull2 = _interopRequireDefault(_bull);
 
+var _app = require('bull-ui/app');
+
+var _app2 = _interopRequireDefault(_app);
+
 var _toureiro = require('toureiro');
 
 var _toureiro2 = _interopRequireDefault(_toureiro);
@@ -46,9 +50,11 @@ var _process$env$REDIS_UR = process.env.REDIS_URL.match(/redis\:\/\/([\d\.]*)\:(
     port = _process$env$REDIS_UR2[2],
     db = _process$env$REDIS_UR2[3];
 
-var toureiro = (0, _toureiro2.default)({ redis: { port: port, host: host, db: db } });
-
 var twilioQueue = new _bull2.default('twilio', port, host, { db: db });
+
+var matador = (0, _app2.default)({ redis: { port: port, host: host, options: { db: db } } });
+
+var toureiro = (0, _toureiro2.default)({ redis: { port: port, host: host, db: db } });
 
 var server = (0, _express2.default)();
 
@@ -86,6 +92,14 @@ server.post('/confirm', function () {
     return _ref.apply(this, arguments);
   };
 }());
+
+server.use('/jobs', function (req, res, next) {
+  req.basepath = '/jobs';
+  res.locals.basepath = '/jobs';
+  next();
+}, matador);
+
+server.use('/toureiro', toureiro);
 
 server.listen(3000, function () {
   console.log('Listening on port 3000...');

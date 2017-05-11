@@ -101,7 +101,7 @@ twilioQueue.on('failed', function () {
             return twilio.messages.create({
               from: process.env.TWILIO_PHONE,
               to: job.data.From,
-              body: 'I give up'
+              body: 'I couldnt send your text. I give up...'
             });
 
           case 4:
